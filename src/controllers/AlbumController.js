@@ -1,4 +1,5 @@
 const Album = require('./../models/Album');
+const Document = require('./../models/Document');
 
 module.exports = {
     async store(request, response) {
@@ -28,6 +29,9 @@ module.exports = {
         console.log(albums)
         return response.json(albums);
     },
+
+
+    
 
     // async update(request, response) {
     //     // editar location, convenio e doenças do user

@@ -5,7 +5,9 @@ const LogoutController = require('./controllers/LogoutController');
 const SearchController = require('./controllers/SearchController');
 const AlbumController = require('./controllers/AlbumController');
 const DocumentController = require('./controllers/DocumentController');
+const ShareController = require('./controllers/ShareController');
 const verifyJWT = require('./utils/verifyJWT');
+const verifyJWTShareLink = require('./utils/verifyJWTShareLink');
 
 //video file
 const path = require('path');
@@ -34,6 +36,11 @@ routes.get('/search', SearchController.index);
 routes.post('/album', AlbumController.store);
 routes.get('/album', AlbumController.index);
 
+// rota parar gerar o link de compartilhamento
+routes.post('/share', ShareController.store);
+// rota de compartilhamento
+routes.get('/share',verifyJWTShareLink, ShareController.show);
+
 
 // //create store stream
 const storage = new GridFsStorage({
@@ -60,7 +67,9 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 routes.post('/document', upload.single('document'), DocumentController.store);
-// routes.get('/document', DocumentController.index);
+
+
+
 routes.get('/document', (request, response) => {
     var gfs = global.gfs;
     
@@ -76,5 +85,7 @@ routes.get('/document', (request, response) => {
         return response.json( files);
     })
 });
+
+routes.get('/document', DocumentController.show);
 
 module.exports = routes;
