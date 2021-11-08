@@ -1,5 +1,6 @@
 const Album = require('../models/Album');
 const Document = require('./../models/Document');
+const mongoose = require('mongoose');
 
 module.exports = {
     async store(request, response) {
@@ -49,20 +50,33 @@ module.exports = {
 
     // listando um doc especifico pelo id fazer dps essa daqui
     async show(request, response) {
-        const gfs = await global.gfs;
-        console.log(gfs);
-        gfs.files.findOne({id: request.query.id}), (err, files) => {
-            // check if files 
-            if (!files || files.length === 0) {
-                return response.status(404).json({
-                    err: 'No files exist'
-                })
+        console.log("rota certa")
+
+        const userDocumentList = await Document.find(
+            {
+                $and: [
+                    {
+                        user_id: { $eq: request.query.user_id }
+                    },
+                    {
+                        album_id: { $eq: request.query.album_id }
+                    }
+                ]
             }
-            // files exist     
-            console.log('achouuu')       
-            const readStrem = gfs.createReadStream(files._id);
-            reasdtream.pip(response)
-            // return response.json(files);
-        };
+        ).clone();
+        let documentIdsList = [];
+
+        userDocumentList.forEach(element => {
+            documentIdsList.push(mongoose.Types.ObjectId(element.document_id));
+        });
+        console.log(documentIdsList)
+
+        const gfs = await global.gfs;
+        var x = gfs;
+        const result = await gfs.files.find(
+            { _id: { $in: documentIdsList } }
+        ).toArray();
+        return response.json(result);
+        // fazer tratativa de erro aqui
     },
 }

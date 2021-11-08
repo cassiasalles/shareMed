@@ -70,7 +70,7 @@ routes.post('/document', upload.single('document'), DocumentController.store);
 
 
 
-routes.get('/document', (request, response) => {
+routes.get('/documents', (request, response) => {
     var gfs = global.gfs;
     
     gfs.files.find().toArray( (err, files) => {
@@ -86,6 +86,6 @@ routes.get('/document', (request, response) => {
     })
 });
 
-routes.get('/document', DocumentController.show);
+routes.get('/document', DocumentController.show); 
 
 module.exports = routes;
