@@ -3,9 +3,6 @@ const Document = require('./../models/Document');
 
 module.exports = {
     async store(request, response) {
-        console.log(request.file);
-        console.log(request.body);
-        // return response.json({"success": true});
 
         let { user_id, album_id, name, description, reason, exam_type } = request.body;
         let document_id = request.file.id
@@ -23,16 +20,6 @@ module.exports = {
             document_id
         });
 
-        const album  = await Album.find({
-            user_id : {$eq: request.body.user_id }
-        }).where().clone();
-
-        
-
-        let albumData = await Album.updateOne({
-            
-            $push: { document_ids: document_id }
-        })
         if (documentData._id) {
             return response.json({ "success": true, documentData });
         } else {
@@ -42,25 +29,40 @@ module.exports = {
     },
 
     // listando todos os docs
-    async index(request, response) {
+    // async index(request, response) {
+    //     //fazer filtro por id de user
+    //     const gfs = await global.gfs;
+    //     console.log(gfs);
+
+    //     global.gfs.files.find().clone().toArray((err, files) => {
+    //         // check if files 
+    //         if (!files || files.length === 0) {
+    //             return response.status(404).json({
+    //                 err: 'No files exist'
+    //             })
+    //         }
+    //         // files exist            
+    //         return response.json(files);
+    //     });
+    // },
+
+
+    // listando um doc especifico pelo id fazer dps essa daqui
+    async show(request, response) {
         const gfs = await global.gfs;
         console.log(gfs);
-
-        global.gfs.files.find(
-            // fazer filtro por usuario aqui
-            {
-                _id: { $in: request.body.user_id }
-            }
-        ).clone().toArray((err, files) => {
-            console.log(files)
+        gfs.files.findOne({id: request.query.id}), (err, files) => {
             // check if files 
             if (!files || files.length === 0) {
                 return response.status(404).json({
                     err: 'No files exist'
                 })
             }
-            // files exist
-            return response.json(files);
-        });
+            // files exist     
+            console.log('achouuu')       
+            const readStrem = gfs.createReadStream(files._id);
+            reasdtream.pip(response)
+            // return response.json(files);
+        };
     },
 }
