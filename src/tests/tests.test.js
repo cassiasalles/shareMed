@@ -1,6 +1,7 @@
 const userController = require('../controllers/UserController');
 const albumController = require('../controllers/AlbumController');
-const documentController = require('../controllers/DocumentController');;
+const documentController = require('../controllers/DocumentController');
+const shareController = require('../controllers/ShareController');
 
 test('verificar integridade da listagem de usuários', () => {
     expect(userController.index().status).not.toBe(500);
@@ -42,9 +43,21 @@ test('verificar integridade da criação de álbuns', () => {
     expect(albumController.store(request).status).not.toBe(500);
 });
 
+test('verificar integridade do link de compartilhamento de álbum', () => {
+    var body = {
+		"album_id": "618188f6f40de5800a6dd3e8",
+    };
+    var request = {"body": body};
+    expect(shareController.store(request).status).not.toBe(500);
+});
 
-
-
+test('verificar integridade da exibição do álbum compartilhado', () => {
+    var query = {
+		"album_id": "618188f6f40de5800a6dd3e8",
+    };
+    var request = {"query": query};
+    expect(shareController.store(request).status).not.toBe(500);
+});
 
 
 
